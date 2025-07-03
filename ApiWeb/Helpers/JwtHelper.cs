@@ -20,11 +20,14 @@ public static class JwtHelper
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+        // Get expiration minutes from config, default to 60 if null or invalid
+        var expireMinutes = double.TryParse(jwtSettings["DurationInMinutes"], out var result) ? result : 60;
+
         var token = new JwtSecurityToken(
             issuer: jwtSettings["Issuer"],
             audience: jwtSettings["Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["DurationInMinutes"]!)),
+            expires: DateTime.UtcNow.AddMinutes(expireMinutes),
             signingCredentials: creds
         );
 

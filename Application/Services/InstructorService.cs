@@ -23,7 +23,7 @@ public class InstructorService : IInstructorService
         if (await _repository.ExistsByNameAsync(dto.Name))
             return "Ya existe un instructor con ese nombre.";
 
-        var instructor = new Instructor { Name = dto.Name };
+        var instructor = new Instructor { Name = dto.Name, Email = dto.Email };
         await _repository.AddAsync(instructor);
         return "Instructor creado correctamente.";
     }
@@ -37,6 +37,7 @@ public class InstructorService : IInstructorService
             return "Ya existe un instructor con ese nombre.";
 
         instructor.Name = dto.Name;
+        instructor.Email = dto.Email;
         await _repository.UpdateAsync(instructor);
         return "Instructor actualizado correctamente.";
     }

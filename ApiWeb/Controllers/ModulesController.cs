@@ -18,13 +18,10 @@ public class ModulesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetAll()
     {
-        if (page <= 0 || pageSize <= 0)
-            return BadRequest("Los parámetros de paginación deben ser números positivos.");
         var result = await _service.GetAllAsync();
-        var paged = result.Skip((page - 1) * pageSize).Take(pageSize);
-        return Ok(paged);
+        return Ok(result);
     }
 
     [HttpGet("paged")]
