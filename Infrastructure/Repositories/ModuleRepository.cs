@@ -18,6 +18,7 @@ public class ModuleRepository : IModuleRepository
     {
         return await _context.Modules
             .Include(m => m.Course)
+            .Include(m => m.Lessons)
             .ToListAsync();
     }
 
@@ -25,6 +26,7 @@ public class ModuleRepository : IModuleRepository
     {
         return await _context.Modules
             .Include(m => m.Course)
+            .Include(m => m.Lessons)
             .FirstOrDefaultAsync(m => m.Id == id);
     }
 

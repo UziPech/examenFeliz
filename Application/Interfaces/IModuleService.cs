@@ -5,7 +5,7 @@ namespace Application.Interfaces;
 
 public interface IModuleService
 {
-    Task<IEnumerable<Module>> GetAllAsync();
+    Task<IEnumerable<ModuleDto>> GetAllAsync();
     Task<Module?> GetByIdAsync(int id);
     Task<string> CreateAsync(ModuleDto dto);
     Task<string> UpdateAsync(int id, ModuleDto dto);

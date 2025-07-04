@@ -5,7 +5,7 @@ namespace Application.Interfaces;
 
 public interface ILessonService
 {
-    Task<IEnumerable<Lesson>> GetAllAsync();
+    Task<IEnumerable<LessonDto>> GetAllAsync();
     Task<Lesson?> GetByIdAsync(int id);
     Task<string> CreateAsync(LessonDto dto);
     Task<string> UpdateAsync(int id, LessonDto dto);

@@ -5,7 +5,7 @@ namespace Application.Interfaces;
 
 public interface ICourseService
 {
-    Task<IEnumerable<Course>> GetAllAsync();
+    Task<IEnumerable<CourseDto>> GetAllAsync();
     Task<Course?> GetByIdAsync(int id);
     Task<string> AddAsync(CourseDto dto);
     Task<string> UpdateAsync(int id, CourseDto dto);

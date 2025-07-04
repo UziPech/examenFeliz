@@ -14,8 +14,16 @@ public class LessonService : ILessonService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<Lesson>> GetAllAsync()
-        => await _repository.GetAllAsync();
+    public async Task<IEnumerable<LessonDto>> GetAllAsync()
+        => (await _repository.GetAllAsync())
+            .Select(l => new LessonDto
+            {
+                Id = l.Id,
+                Title = l.Title,
+                ModuleId = l.ModuleId,
+                CreatedAt = l.CreatedAt
+            })
+            .ToList();
 
     public async Task<Lesson?> GetByIdAsync(int id)
         => await _repository.GetByIdAsync(id);

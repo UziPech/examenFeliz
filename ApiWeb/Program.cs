@@ -91,11 +91,24 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Middleware global para restringir por IP
+// Middleware global para restringir por IP (compatible con proxies y Somee)
 app.Use(async (context, next) =>
 {
     var allowedIp = "187.155.101.200";
-    var remoteIp = context.Connection.RemoteIpAddress?.ToString();
+    string? remoteIp = context.Connection.RemoteIpAddress?.ToString();
+
+    if (context.Request.Headers.ContainsKey("X-Forwarded-For"))
+    {
+        var forwardedFor = context.Request.Headers["X-Forwarded-For"].ToString();
+        remoteIp = forwardedFor.Split(',')[0].Trim();
+    }
+
+    // Log temporal para depuración: mostrar la IP detectada
+    context.Response.ContentType = "text/plain";
+    await context.Response.WriteAsync($"IP detectada: {remoteIp}\n");
+    await context.Response.Body.FlushAsync();
+    // Fin del log temporal
+
     if (remoteIp != allowedIp)
     {
         context.Response.StatusCode = 403;

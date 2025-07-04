@@ -14,8 +14,16 @@ public class CourseService : ICourseService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<Course>> GetAllAsync()
-        => await _repository.GetAllAsync();
+    public async Task<IEnumerable<CourseDto>> GetAllAsync()
+        => (await _repository.GetAllAsync())
+            .Select(c => new CourseDto
+            {
+                Title = c.Title,
+                Description = c.Description,
+                IsPublished = c.IsPublished,
+                InstructorId = c.InstructorId
+            })
+            .ToList();
 
     public async Task<Course?> GetByIdAsync(int id)
         => await _repository.GetByIdAsync(id);

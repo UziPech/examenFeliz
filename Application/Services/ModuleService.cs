@@ -14,8 +14,16 @@ public class ModuleService : IModuleService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<Module>> GetAllAsync()
-        => await _repository.GetAllAsync();
+    public async Task<IEnumerable<ModuleDto>> GetAllAsync()
+        => (await _repository.GetAllAsync())
+            .Select(m => new ModuleDto
+            {
+                Id = m.Id,
+                Title = m.Title,
+                CourseId = m.CourseId,
+                CreatedAt = m.CreatedAt
+            })
+            .ToList();
 
     public async Task<Module?> GetByIdAsync(int id)
         => await _repository.GetByIdAsync(id);
