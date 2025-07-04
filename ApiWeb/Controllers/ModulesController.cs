@@ -40,7 +40,16 @@ public class ModulesController : ControllerBase
         if (id <= 0)
             return BadRequest("El id debe ser positivo.");
         var module = await _service.GetByIdAsync(id);
-        return module == null ? NotFound() : Ok(module);
+        if (module == null) return NotFound();
+
+        var dto = new Application.DTOs.ModuleDto
+        {
+            Id = module.Id,
+            Title = module.Title,
+            CourseId = module.CourseId,
+            CreatedAt = module.CreatedAt
+        };
+        return Ok(dto);
     }
 
     [HttpPost]

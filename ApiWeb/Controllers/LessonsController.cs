@@ -40,7 +40,16 @@ public class LessonsController : ControllerBase
         if (id <= 0)
             return BadRequest("El id debe ser positivo.");
         var lesson = await _service.GetByIdAsync(id);
-        return lesson == null ? NotFound() : Ok(lesson);
+        if (lesson == null) return NotFound();
+
+        var dto = new Application.DTOs.LessonDto
+        {
+            Id = lesson.Id,
+            Title = lesson.Title,
+            ModuleId = lesson.ModuleId,
+            CreatedAt = lesson.CreatedAt
+        };
+        return Ok(dto);
     }
 
     [HttpPost]

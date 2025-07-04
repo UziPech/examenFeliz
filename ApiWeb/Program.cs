@@ -55,6 +55,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -89,6 +90,20 @@ var app = builder.Build();
 // Activar middlewares
 app.UseSwagger();
 app.UseSwaggerUI();
+
+// Middleware global para restringir por IP
+app.Use(async (context, next) =>
+{
+    var allowedIp = "187.155.101.200";
+    var remoteIp = context.Connection.RemoteIpAddress?.ToString();
+    if (remoteIp != allowedIp)
+    {
+        context.Response.StatusCode = 403;
+        await context.Response.WriteAsync("Lo sentimos esta BELLA API NO ESTA DISPONIBLE EN TU IP :)");
+        return;
+    }
+    await next();
+});
 
 // 🛡️ Activar autenticación y autorización
 app.UseAuthentication();

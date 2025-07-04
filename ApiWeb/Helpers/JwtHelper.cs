@@ -10,7 +10,18 @@ public static class JwtHelper
     public static string GenerateToken(string username, string role, IConfiguration config)
     {
         var jwtSettings = config.GetSection("Jwt");
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
+        var keyValue = jwtSettings["Key"];
+        var issuer = jwtSettings["Issuer"];
+        var audience = jwtSettings["Audience"];
+
+        if (string.IsNullOrWhiteSpace(keyValue))
+            throw new ArgumentException("La clave JWT ('Key') no está configurada en appsettings.json");
+        if (string.IsNullOrWhiteSpace(issuer))
+            throw new ArgumentException("El issuer JWT ('Issuer') no está configurado en appsettings.json");
+        if (string.IsNullOrWhiteSpace(audience))
+            throw new ArgumentException("El audience JWT ('Audience') no está configurado en appsettings.json");
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyValue));
 
         var claims = new[]
         {
@@ -20,12 +31,12 @@ public static class JwtHelper
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        // Get expiration minutes from config, default to 60 if null or invalid
+        // Obtener minutos de expiración, por defecto 60 si no existe o es inválido
         var expireMinutes = double.TryParse(jwtSettings["DurationInMinutes"], out var result) ? result : 60;
 
         var token = new JwtSecurityToken(
-            issuer: jwtSettings["Issuer"],
-            audience: jwtSettings["Audience"],
+            issuer: issuer,
+            audience: audience,
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(expireMinutes),
             signingCredentials: creds

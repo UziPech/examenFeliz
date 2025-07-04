@@ -40,7 +40,16 @@ public class CoursesController : ControllerBase
         if (id <= 0)
             return BadRequest("El id debe ser positivo.");
         var course = await _service.GetByIdAsync(id);
-        return course == null ? NotFound() : Ok(course);
+        if (course == null) return NotFound();
+
+        var dto = new Application.DTOs.CourseDto
+        {
+            Title = course.Title,
+            Description = course.Description,
+            IsPublished = course.IsPublished,
+            InstructorId = course.InstructorId
+        };
+        return Ok(dto);
     }
 
     [HttpPost]
